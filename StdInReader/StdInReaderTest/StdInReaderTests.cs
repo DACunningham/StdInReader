@@ -5,27 +5,28 @@ using System.IO;
 using System.Text;
 using Xunit;
 using FluentAssertions;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace StdInReaderTest
 {
     public class StdInReaderTests
     {
-        [Fact]
-        public void StdInReader_ValidFilePath_ReturnsArrayWithData()
+        [Theory]
+        [InlineData("INPUT_FILE")]
+        public void StdInReader_ValidFilePath_ReturnsArrayWithData(string environmentVar)
         {
             // Arrange
-            Environment.SetEnvironmentVariable("INPUT_FILE", "C:\\test.txt");
+            Environment.SetEnvironmentVariable(environmentVar, "C:\\test.txt");
             int[][] testArray = GetCorrectResult();
 
             var mockFileManager = new Mock<IFileManager>();
             mockFileManager.Setup(f => f.StreamReader(It.IsAny<string>()))
                 .Returns(GetMockStream());
 
-            // Act
             StdInReader.StdInReader reader = new StdInReader.StdInReader(mockFileManager.Object);
-            int[][] result = reader.GetInputJaggedArray("INPUT_FILE");
+
+            // Act
+
+            int[][] result = reader.GetInputJaggedArray(environmentVar);
 
 
             // Assert
@@ -33,6 +34,27 @@ namespace StdInReaderTest
             {
                 result[i].Should().Equal(testArray[i]);
             }
+        }
+
+        [Theory]
+        [InlineData("WRONG_KEY")]
+        public void StdInReader_InvalidFilePath_ThrowsArgumentNullException(string environmentVar)
+        {
+            // Arrange
+            Environment.SetEnvironmentVariable("INPUT_FILE", "C:\\test.txt");
+            int[][] testArray = GetCorrectResult();
+
+            var mockFileManager = new Mock<IFileManager>();
+            mockFileManager.Setup(f => f.StreamReader(null))
+                .Throws(new ArgumentNullException());
+
+            StdInReader.StdInReader reader = new StdInReader.StdInReader(mockFileManager.Object);
+
+            // Act
+            Action act = () => reader.GetInputJaggedArray(environmentVar);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
         }
 
         private StreamReader GetMockStream()

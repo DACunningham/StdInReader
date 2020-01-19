@@ -6,7 +6,7 @@ namespace StdInReader
     /// <summary>
     /// <c>StdInReader</c> provides static methods to read input files and return their data in arrays
     /// </summary>
-    public class StdInReader
+    public class StdInReader : IStdInReader
     {
         private readonly IFileManager _fileManager;
 
@@ -24,34 +24,36 @@ namespace StdInReader
         {
             string line = "";
             string file_Path = Environment.GetEnvironmentVariable(environmentVar);
-            // use using for streamreader
-            StreamReader fileReader = _fileManager.StreamReader(file_Path);
 
-            string firstLine = fileReader.ReadLine();
-            string[] firstLineStr = firstLine.Split(' ');
-            int lengthOfArray = Int32.Parse(firstLineStr[0]);
-            int numOfOperations = Int32.Parse(firstLineStr[1]);
-
-            int[][] result = new int[numOfOperations + 1][];
-            result[0] = new int[2] { lengthOfArray, numOfOperations };
-
-            int counter = 1;
-
-            while ((line = fileReader.ReadLine()) != null)
+            using (StreamReader fileReader = _fileManager.StreamReader(file_Path))
             {
-                int[] lineInt = new int[3];
-                string[] lineStr = new string[3];
-                lineStr = line.Split(' ');
+                string firstLine = fileReader.ReadLine();
+                string[] firstLineStr = firstLine.Split(' ');
+                int lengthOfArray = Int32.Parse(firstLineStr[0]);
+                int numOfOperations = Int32.Parse(firstLineStr[1]);
 
-                for (int i = 0; i < lineStr.Length; i++)
+                int[][] result = new int[numOfOperations + 1][];
+                result[0] = new int[2] { lengthOfArray, numOfOperations };
+
+                int counter = 1;
+
+                while ((line = fileReader.ReadLine()) != null)
                 {
-                    lineInt[i] = Int32.Parse(lineStr[i]);
-                }
-                result[counter] = lineInt;
-                counter++;
-            }
+                    int lineColCount = line.Split(' ').Length;
+                    int[] lineInt = new int[lineColCount];
+                    string[] lineStr = new string[lineColCount];
+                    lineStr = line.Split(' ');
 
-            return result;
+                    for (int i = 0; i < lineStr.Length; i++)
+                    {
+                        lineInt[i] = Int32.Parse(lineStr[i]);
+                    }
+                    result[counter] = lineInt;
+                    counter++;
+                }
+
+                return result;
+            }
         }
     }
 }

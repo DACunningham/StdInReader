@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StdInReader
 {
-    class FileManager : IFileManager
+    public class FileManager : IFileManager
     {
         public StreamReader StreamReader(string path)
         {
