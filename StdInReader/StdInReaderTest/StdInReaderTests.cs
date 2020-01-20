@@ -1,5 +1,5 @@
 using Moq;
-using StdInReader;
+using InputReader;
 using System;
 using System.IO;
 using System.Text;
@@ -22,7 +22,7 @@ namespace StdInReaderTest
             mockFileManager.Setup(f => f.StreamReader(It.IsAny<string>()))
                 .Returns(GetMockStream());
 
-            StdInReader.StdInReader reader = new StdInReader.StdInReader(mockFileManager.Object);
+            StdInReader reader = new StdInReader(mockFileManager.Object);
 
             // Act
 
@@ -48,7 +48,7 @@ namespace StdInReaderTest
             mockFileManager.Setup(f => f.StreamReader(null))
                 .Throws(new ArgumentNullException());
 
-            StdInReader.StdInReader reader = new StdInReader.StdInReader(mockFileManager.Object);
+            StdInReader reader = new StdInReader(mockFileManager.Object);
 
             // Act
             Action act = () => reader.GetInputJaggedArray(environmentVar);

@@ -1,4 +1,4 @@
-﻿namespace StdInReader
+﻿namespace InputReader
 {
     public interface IStdInReader
     {

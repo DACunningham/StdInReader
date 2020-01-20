@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 
-namespace StdInReader
+namespace InputReader
 {
     /// <summary>
-    /// <c>StdInReader</c> provides static methods to read input files and return their data in arrays
+    /// <c>InputReader</c> provides methods to read input files and return their data in arrays
     /// </summary>
     public class StdInReader : IStdInReader
     {

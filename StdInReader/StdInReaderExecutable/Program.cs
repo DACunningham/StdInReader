@@ -1,6 +1,6 @@
 ﻿using System;
 using Autofac;
-using StdInReader;
+using InputReader;
 
 namespace StdInReaderExecutable
 {
@@ -12,7 +12,7 @@ namespace StdInReaderExecutable
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<FileManager>().As<IFileManager>();
-            builder.RegisterType<StdInReader.StdInReader>().As<IStdInReader>();
+            builder.RegisterType<StdInReader>().As<IStdInReader>();
             _container = builder.Build();
 
             Run();
@@ -23,9 +23,10 @@ namespace StdInReaderExecutable
             using (var scope = _container.BeginLifetimeScope())
             {
                 var fileManager = scope.Resolve<IFileManager>();
-                StdInReader.StdInReader stdInReader = new StdInReader.StdInReader(fileManager);
-                var arr = stdInReader.GetInputJaggedArray("FILE_PATH");
-                Console.WriteLine(arr);
+                StdInReader stdInReader = new StdInReader(fileManager);
+                Environment.SetEnvironmentVariable("INPUT_FILE", "C:\\test.txt");
+                var arr = stdInReader.GetInputJaggedArray("");
+                Array.ForEach(arr, a => Array.ForEach(a, b => Console.WriteLine(b)));
                 Console.ReadLine();
             }
         }
